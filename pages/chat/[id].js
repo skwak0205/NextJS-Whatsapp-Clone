@@ -25,6 +25,7 @@ function Chat({ chat, messages }) {
 
 export default Chat;
 
+// Server Side Rendering
 export async function getServerSideProps(context) {
   const ref = db.collection('chats').doc(context.query.id);
 
@@ -33,6 +34,7 @@ export async function getServerSideProps(context) {
     .orderBy('timestamp', 'asc')
     .get();
 
+  // Prep the Messages...
   const messages = messagesRes.docs
     .map((doc) => ({
       id: doc.id,
@@ -43,7 +45,9 @@ export async function getServerSideProps(context) {
       timestamp: messages.timestamp.toDate().getTime(),
     }));
 
+  // Prep the Chats...
   const chatRes = await ref.get();
+
   const chat = {
     id: chatRes.id,
     ...chatRes.data(),
